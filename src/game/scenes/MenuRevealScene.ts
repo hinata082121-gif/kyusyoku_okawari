@@ -17,7 +17,7 @@ export class MenuRevealScene extends Phaser.Scene {
       selectedMenuId: menu.id,
       remainingServings: menu.remainingServings,
     };
-    trackMenuRevealed(menu);
+    trackMenuRevealed(menu.name, menu.id);
 
     this.cameras.main.setBackgroundColor(0xf0c27a);
     drawMenuBoard(this, menu);

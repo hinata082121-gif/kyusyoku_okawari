@@ -1,9 +1,11 @@
-import type { LunchMenu, ResultType } from '../game/types';
 import { siteConfig } from '../config/site';
 
-type AnalyticsParams = Record<string, string | number | boolean | undefined>;
+type AnalyticsValue = string | number | boolean;
+type AnalyticsParams = Record<string, AnalyticsValue | null | undefined>;
+type JankenResult = 'win' | 'lose' | 'draw';
 
 let initialized = false;
+const GA_SCRIPT_ID = 'ga4-gtag-script';
 
 export function initAnalytics(): void {
   const measurementId = siteConfig.gaMeasurementId;
@@ -16,18 +18,19 @@ export function initAnalytics(): void {
   window.gtag('js', new Date());
   window.gtag('config', measurementId, { send_page_view: false });
 
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-  document.head.appendChild(script);
+  if (!document.getElementById(GA_SCRIPT_ID)) {
+    const script = document.createElement('script');
+    script.id = GA_SCRIPT_ID;
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.appendChild(script);
+  }
   initialized = true;
 }
 
 export function trackPageView(path: string): void {
   sendEvent('page_view', {
     page_path: path,
-    page_location: window.location.href,
-    page_title: document.title,
   });
 }
 
@@ -35,55 +38,75 @@ export function trackGameStart(): void {
   sendEvent('game_start');
 }
 
-export function trackMenuRevealed(menu: LunchMenu): void {
+export function trackMenuRevealed(menuName: string, menuId?: string): void {
   sendEvent('menu_revealed', {
-    menu_name: menu.name,
-    menu_id: menu.id,
+    menu_name: menuName,
+    menu_id: menuId,
   });
 }
 
-export function trackTimingTap(menu: LunchMenu, reactionTimeMs: number, rank: number): void {
+export function trackTimingTap(
+  menuName: string,
+  reactionTimeMs: number | null,
+  rank: number | null,
+  isFlying = false,
+): void {
   sendEvent('timing_tap', {
-    menu_name: menu.name,
+    menu_name: menuName,
     reaction_time_ms: reactionTimeMs,
     rank,
+    is_flying: isFlying,
   });
 }
 
-export function trackJankenStart(menu: LunchMenu): void {
+export function trackJankenStart(menuName: string): void {
   sendEvent('janken_start', {
-    menu_name: menu.name,
+    menu_name: menuName,
   });
 }
 
-export function trackJankenResult(result: 'win' | 'lose', menu: LunchMenu): void {
-  sendEvent(result === 'win' ? 'janken_win' : 'janken_lose', {
-    menu_name: menu.name,
+export function trackJankenResult(menuName: string, result: JankenResult): void {
+  sendEvent('janken_result', {
+    menu_name: menuName,
+    janken_result: result,
   });
 }
 
-export function trackGameResult(resultType: ResultType, menu: LunchMenu, rank?: number, reactionTimeMs?: number): void {
+export function trackResultView(
+  resultType: string,
+  menuName: string,
+  reactionTimeMs?: number | null,
+  rank?: number | null,
+): void {
   sendEvent('result_view', {
     result_type: resultType,
-    menu_name: menu.name,
-    rank,
+    menu_name: menuName,
     reaction_time_ms: reactionTimeMs,
+    rank,
   });
 }
 
-export function trackShareCopy(resultType: ResultType): void {
-  sendEvent('share_copy_click', {
-    result_type: resultType,
-  });
-}
-
-export function trackRetryClick(resultType?: ResultType): void {
+export function trackRetryClick(resultType?: string, menuName?: string): void {
   sendEvent('retry_click', {
     result_type: resultType,
+    menu_name: menuName,
+  });
+}
+
+export function trackShareCopyClick(resultType: string, menuName: string): void {
+  sendEvent('share_copy_click', {
+    result_type: resultType,
+    menu_name: menuName,
   });
 }
 
 function sendEvent(name: string, params: AnalyticsParams = {}): void {
   if (!siteConfig.gaMeasurementId || !window.gtag) return;
-  window.gtag('event', name, params);
+  window.gtag('event', name, sanitizeParams(params));
+}
+
+function sanitizeParams(params: AnalyticsParams): Record<string, AnalyticsValue> {
+  return Object.fromEntries(
+    Object.entries(params).filter((entry): entry is [string, AnalyticsValue] => entry[1] !== undefined && entry[1] !== null),
+  );
 }

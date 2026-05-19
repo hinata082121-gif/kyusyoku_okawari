@@ -100,27 +100,43 @@ VITE_GOOGLE_SITE_VERIFICATION=
 7. Search Consoleで確認
 8. `sitemap.xml` を送信
 
-## Google Analytics導入手順
+## Google Analytics 4 導入手順
 
-1. GA4プロパティを作成
-2. Measurement IDを取得
-3. `VITE_GA_MEASUREMENT_ID` に設定
-4. Vercel環境変数にも同じ値を登録
-5. 再デプロイ
-6. GA4のリアルタイムレポートで確認
+1. Google AnalyticsでGA4プロパティを作成
+2. ウェブデータストリームを作成
+3. Measurement IDを取得
+4. `.env.local` に以下を設定
 
-送信イベント:
+```bash
+VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+5. VercelのEnvironment Variablesにも同じ値を設定
+6. 再デプロイ
+7. Google Analyticsのリアルタイムレポートで確認
+
+## 計測イベント
 
 - `page_view`
 - `game_start`
 - `menu_revealed`
 - `timing_tap`
 - `janken_start`
-- `janken_win`
-- `janken_lose`
+- `janken_result`
 - `result_view`
-- `share_copy_click`
 - `retry_click`
+- `share_copy_click`
+
+送信パラメータ:
+
+- `page_path`
+- `menu_name`
+- `menu_id`
+- `result_type`
+- `reaction_time_ms`
+- `rank`
+- `is_flying`
+- `janken_result`
 
 個人情報、ログイン情報、ユーザー識別情報は送信しません。
 

@@ -5,7 +5,7 @@ import { COLORS, FONT_FAMILY, GAME_WIDTH, SceneKeys, UI } from '../constants';
 import type { GameState, ResultType } from '../types';
 import { buildShareCopy, pickMainCopy } from '../systems/shareTextSystem';
 import { getMenuFromState, normalizeResultState } from '../systems/gameStateSystem';
-import { trackGameResult, trackRetryClick, trackShareCopy } from '../../lib/analytics';
+import { trackResultView, trackRetryClick, trackShareCopyClick } from '../../lib/analytics';
 
 export class ResultScene extends Phaser.Scene {
   private state?: GameState;
@@ -29,7 +29,7 @@ export class ResultScene extends Phaser.Scene {
     const mainCopy = pickMainCopy(resultType, menu);
     const shareCopy = buildShareCopy(resultType, menu, mainCopy);
     const stateWithShare: GameState = { ...this.state, resultType, shareCopy };
-    trackGameResult(resultType, menu, this.state.rank, this.state.reactionTimeMs);
+    trackResultView(resultType, menu.name, this.state.reactionTimeMs, this.state.rank);
 
     this.cameras.main.setBackgroundColor(getBackgroundColor(resultType));
     drawPixelConfetti(this, resultType);
@@ -62,7 +62,7 @@ export class ResultScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     new Button(this, GAME_WIDTH / 2, UI.bottomPrimaryY, 284, UI.primaryButtonHeight, 'もう一回', () => {
-      trackRetryClick(resultType);
+      trackRetryClick(resultType, menu.name);
       this.scene.start(SceneKeys.MenuReveal);
     }, { fillColor: COLORS.red, fontSize: 22 });
 
@@ -71,7 +71,7 @@ export class ResultScene extends Phaser.Scene {
     }, { fillColor: COLORS.navy, fontSize: 15 });
 
     new Button(this, 256, UI.bottomSecondaryY, 122, UI.secondaryButtonHeight, 'コピー', () => {
-      trackShareCopy(resultType);
+      trackShareCopyClick(resultType, menu.name);
       this.copyShareText(shareCopy, feedbackText);
     }, { fillColor: COLORS.green, fontSize: 15 });
   }

@@ -30,7 +30,7 @@ export class JankenScene extends Phaser.Scene {
     }
 
     const menu = getMenuFromState(this.state);
-    trackJankenStart(menu);
+    trackJankenStart(menu.name);
     this.cameras.main.setBackgroundColor(0xf0c27a);
     this.add.rectangle(GAME_WIDTH / 2, 54, 324, 78, COLORS.navy).setStrokeStyle(4, COLORS.black);
     this.add.text(GAME_WIDTH / 2, 44, '残り1個じゃんけん', {
@@ -79,12 +79,14 @@ export class JankenScene extends Phaser.Scene {
   private play(playerHand: JankenHand): void {
     if (!this.state) return;
     const state = this.state;
+    const menu = getMenuFromState(state);
     this.buttons.forEach((button) => button.setDisabled(true));
     const cpuHand = getRandomCpuHand();
     const result = judgeJanken(playerHand, cpuHand);
     this.handText?.setText(`あなた：${getHandLabel(playerHand)}　相手：${getHandLabel(cpuHand)}`);
 
     if (result === 'draw') {
+      trackJankenResult(menu.name, 'draw');
       this.statusText?.setColor('#e84b4b');
       this.statusText?.setText('あいこ！もう一回！');
       this.cameras.main.shake(100, 0.003);
@@ -98,8 +100,7 @@ export class JankenScene extends Phaser.Scene {
     }
 
     const resultType = result === 'win' ? 'lastOneSuccess' : 'jankenLose';
-    const menu = getMenuFromState(state);
-    trackJankenResult(result, menu);
+    trackJankenResult(menu.name, result);
     this.statusText?.setColor(result === 'win' ? '#1f7a4d' : '#e84b4b');
     this.statusText?.setText(result === 'win' ? '勝った！' : '負けた…');
     this.cameras.main.shake(160, result === 'win' ? 0.006 : 0.004);

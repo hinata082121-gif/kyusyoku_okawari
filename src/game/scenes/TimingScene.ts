@@ -76,6 +76,7 @@ export class TimingScene extends Phaser.Scene {
     this.lineButton?.setDisabled(true);
 
     if (!this.signalStarted) {
+      trackTimingTap(menu.name, null, null, true);
       this.scene.start(SceneKeys.Result, {
         ...state,
         remainingServings: menu.remainingServings,
@@ -87,7 +88,7 @@ export class TimingScene extends Phaser.Scene {
     const tappedAt = this.time.now;
     const reactionTimeMs = getReactionTimeMs(this.signalAt, tappedAt);
     const rank = getRankFromReaction(reactionTimeMs);
-    trackTimingTap(menu, reactionTimeMs, rank);
+    trackTimingTap(menu.name, reactionTimeMs, rank, false);
     this.cueText?.setText('列へダッシュ！');
     this.statusText?.setText(`${reactionTimeMs}msで反応！`);
     this.cameras.main.shake(120, 0.004);
