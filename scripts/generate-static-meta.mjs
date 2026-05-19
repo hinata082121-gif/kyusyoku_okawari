@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const fallbackSiteUrl = 'https://kyushoku-okawari-sodatsusen.vercel.app';
+const fallbackSiteUrl = 'https://kyusyoku-okawari.vercel.app';
 const routes = ['/', '/game', '/how-to-play', '/privacy', '/terms', '/contact', '/strategy', '/menus', '/series'];
 
 function readEnvFile(path) {

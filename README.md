@@ -6,9 +6,9 @@
 
 ## Published URL
 
-TODO: Vercel URLを記載
+https://kyusyoku-okawari.vercel.app/
 
-公開後は `.env.example` を参考に、Vercel環境変数へ `VITE_SITE_URL` を設定してください。
+Vercel環境変数の `VITE_SITE_URL` も同じURLに設定します。
 
 ## Tech Stack
 
@@ -72,14 +72,15 @@ public/
 ## Notes
 
 - ゲームプレイ画面、じゃんけん画面、リザルト画面に広告枠はありません。
-- OGP、canonical、sitemap、robotsのURLはVercel公開URLに合わせて差し替えてください。
-- Google AnalyticsやAdSenseコードは現時点では追加していません。
+- OGP、canonical、sitemap、robotsのURLは `https://kyusyoku-okawari.vercel.app/` に合わせています。
+- Google AnalyticsはMeasurement ID未設定なら読み込まれません。
+- AdSenseのサイト審査用scriptは `index.html` の `head` に設置済みです。広告ユニットは追加していません。
 - `.env` / `.env.local` / `.env.production` はコミットしません。公開用の値はVercel環境変数で管理します。
 
 ## Environment Variables
 
 ```bash
-VITE_SITE_URL=https://your-vercel-url.vercel.app
+VITE_SITE_URL=https://kyusyoku-okawari.vercel.app
 VITE_GA_MEASUREMENT_ID=
 VITE_GOOGLE_SITE_VERIFICATION=
 ```
@@ -125,6 +126,10 @@ VITE_GOOGLE_SITE_VERIFICATION=
 
 ## AdSense申請前チェック
 
+- AdSenseコード設置済み
+- ゲーム内広告なし
+- 操作ボタン付近の広告なし
+- リザルト画面広告なし
 - トップページがある
 - 遊び方ページがある
 - 攻略・メニュー紹介・シリーズ紹介コンテンツがある
@@ -133,16 +138,17 @@ VITE_GOOGLE_SITE_VERIFICATION=
 - お問い合わせページがある
 - OGP / SEOメタ情報がある
 - `sitemap.xml` と `robots.txt` がある
-- ゲーム中広告がない
-- 操作ボタン付近に広告枠がない
 - 誤クリック誘導がない
 - スマホ表示が崩れていない
+
+## 広告配置方針
 
 広告を置いてよい将来候補:
 
 - トップページ下部
 - 遊び方ページ本文下
 - 攻略ページ
+- メニュー紹介ページ
 - 開発ログページ
 - シリーズ紹介ページ
 

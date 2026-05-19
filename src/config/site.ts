@@ -1,4 +1,4 @@
-const fallbackSiteUrl = 'https://kyushoku-okawari-sodatsusen.vercel.app';
+const fallbackSiteUrl = 'https://kyusyoku-okawari.vercel.app';
 
 function normalizeSiteUrl(url: string | undefined): string {
   const trimmed = url?.trim();

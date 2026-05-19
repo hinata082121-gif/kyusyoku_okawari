@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kyushoku-okawari-sodatsusen.vercel.app/sitemap.xml
+Sitemap: https://kyusyoku-okawari.vercel.app/sitemap.xml
