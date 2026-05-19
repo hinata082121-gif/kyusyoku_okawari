@@ -1,0 +1,58 @@
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #12223a;
+  color: #fff;
+  font-family:
+    "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  box-sizing: border-box;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  max-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+  max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+noscript {
+  position: fixed;
+  inset: auto 16px 16px;
+  color: #fff3d6;
+  text-align: center;
+  font-weight: 700;
+}

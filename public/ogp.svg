@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">給食おかわり争奪戦</title>
+  <desc id="desc">平成学校ゲームズ 第二弾のOGP仮画像</desc>
+  <rect width="1200" height="630" fill="#7fc6e6"/>
+  <rect x="70" y="92" width="1060" height="330" fill="#1f7a4d" stroke="#101820" stroke-width="12"/>
+  <rect x="92" y="114" width="1016" height="12" fill="#5abf83" opacity=".75"/>
+  <rect x="0" y="420" width="1200" height="210" fill="#f0c27a"/>
+  <g opacity=".45" stroke="#d59b5f" stroke-width="8">
+    <path d="M0 465H1200"/>
+    <path d="M0 535H1200"/>
+    <path d="M0 605H1200"/>
+  </g>
+  <text x="600" y="158" text-anchor="middle" font-family="Meiryo, sans-serif" font-size="40" font-weight="700" fill="#fff8e8">平成学校ゲームズ 第二弾</text>
+  <text x="600" y="265" text-anchor="middle" font-family="Meiryo, sans-serif" font-size="94" font-weight="900" fill="#fff3d6" stroke="#101820" stroke-width="14" paint-order="stroke">給食おかわり争奪戦</text>
+  <text x="600" y="344" text-anchor="middle" font-family="Meiryo, sans-serif" font-size="42" font-weight="700" fill="#fffd9a">最後のプリン、取れるか。</text>
+  <g transform="translate(250 470)">
+    <ellipse cx="0" cy="54" rx="88" ry="32" fill="#c9d0d8" stroke="#101820" stroke-width="8"/>
+    <circle cx="-26" cy="45" r="34" fill="#fff8e8"/>
+    <rect x="4" y="29" width="64" height="38" fill="#f38a2e" stroke="#101820" stroke-width="6"/>
+  </g>
+  <g transform="translate(600 505)">
+    <rect x="-95" y="-30" width="190" height="58" fill="#b97842" stroke="#101820" stroke-width="8"/>
+    <rect x="-76" y="-24" width="152" height="14" fill="#fff3d6"/>
+  </g>
+  <g transform="translate(950 486)">
+    <rect x="-42" y="-28" width="84" height="74" fill="#ffd447" stroke="#101820" stroke-width="8"/>
+    <rect x="-48" y="-54" width="96" height="26" fill="#b86a2f" stroke="#101820" stroke-width="8"/>
+  </g>
+  <rect x="78" y="448" width="1044" height="112" fill="#b97842" stroke="#101820" stroke-width="10"/>
+  <text x="600" y="531" text-anchor="middle" font-family="Meiryo, sans-serif" font-size="36" font-weight="700" fill="#fff8e8">タイミングよく並んで、残り1個ならじゃんけん！</text>
+</svg>
