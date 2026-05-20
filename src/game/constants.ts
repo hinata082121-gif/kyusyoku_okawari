@@ -47,4 +47,5 @@ export const SceneKeys = {
   Janken: 'JankenScene',
   Result: 'ResultScene',
   Collection: 'CollectionScene',
+  Recording: 'RecordingScene',
 } as const;

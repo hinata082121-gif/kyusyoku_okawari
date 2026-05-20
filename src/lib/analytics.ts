@@ -91,6 +91,15 @@ export function trackRareMenuRevealed(menuName: string, menuId: string, rarity: 
   });
 }
 
+export function trackPromoView(variant: string): void {
+  sendEvent('promo_view', {
+    variant,
+  });
+  sendEvent('promo_variant', {
+    variant,
+  });
+}
+
 function sendEvent(name: string, params: AnalyticsParams = {}): void {
   if (typeof window.gtag !== 'function') return;
   window.gtag('event', name, sanitizeParams(params));

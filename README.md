@@ -75,6 +75,20 @@ public/
 - コレクション画面
 - レア度別のSNS向けリザルト
 
+## 録画専用モード
+
+ショート動画宣伝用に、URLクエリで起動する録画専用モードがあります。通常URLでは通常プレイのままです。
+
+- 勝利デモ: `https://kyusyoku-okawari.vercel.app/?recording=win`
+- 敗北デモ: `https://kyusyoku-okawari.vercel.app/?recording=lose`
+- ランダムデモ: `https://kyusyoku-okawari.vercel.app/?recording=random`
+- コレクション訴求: `https://kyusyoku-okawari.vercel.app/?recording=collection`
+- サムネイル静止画: `https://kyusyoku-okawari.vercel.app/?recording=thumbnail`
+
+録画モードは自動進行で、広告枠や操作ボタンは表示しません。GA4では通常プレイの `game_start` / `result_view` と混ざらないように、`promo_view` と `promo_variant` のみを送信します。
+
+詳しい録画手順は [docs/promo-recording-guide.md](docs/promo-recording-guide.md) を参照してください。
+
 ## Controls
 
 1. 「おかわり開始！」の合図を待つ
@@ -126,6 +140,8 @@ VITE_GOOGLE_SITE_VERIFICATION=
 - `collection_view`
 - `collection_acquired`
 - `rare_menu_revealed`
+- `promo_view`
+- `promo_variant`
 
 送信パラメータ:
 

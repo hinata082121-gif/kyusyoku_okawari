@@ -16,6 +16,17 @@ export class BootScene extends Phaser.Scene {
         fontStyle: 'bold',
       })
       .setOrigin(0.5);
-    this.time.delayedCall(250, () => this.scene.start(SceneKeys.Title));
+    this.time.delayedCall(250, () => {
+      const recordingVariant = getRecordingVariant();
+      this.scene.start(recordingVariant ? SceneKeys.Recording : SceneKeys.Title, recordingVariant ? { variant: recordingVariant } : undefined);
+    });
   }
+}
+
+function getRecordingVariant(): string | undefined {
+  const value = new URLSearchParams(window.location.search).get('recording');
+  if (value === 'win' || value === 'lose' || value === 'random' || value === 'collection' || value === 'thumbnail') {
+    return value;
+  }
+  return undefined;
 }

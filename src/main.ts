@@ -17,6 +17,8 @@ type RouteKey =
   | '/menus'
   | '/series';
 
+type RecordingVariant = 'win' | 'lose' | 'random' | 'collection' | 'thumbnail';
+
 const pageMeta: Record<RouteKey, { title: string; description: string }> = {
   '/': {
     title: siteConfig.siteTitle,
@@ -71,6 +73,12 @@ function navigate(route: RouteKey): void {
 }
 
 function render(): void {
+  const recordingVariant = getRecordingVariant();
+  if (recordingVariant) {
+    renderRecordingMode(recordingVariant);
+    return;
+  }
+
   const route = getRoute();
   updateMeta(route);
 
@@ -246,6 +254,35 @@ function renderHowToPlay(): string {
     <p>フライングすると先生に止められます。合図をよく見て、人気メニューを勝ち取りましょう。</p>
     <p><a class="primary-link inline-link" href="/game" data-route>ゲームをはじめる</a></p>
   `;
+}
+
+function getRecordingVariant(): RecordingVariant | undefined {
+  const value = new URLSearchParams(window.location.search).get('recording');
+  if (
+    value === 'win' ||
+    value === 'lose' ||
+    value === 'random' ||
+    value === 'collection' ||
+    value === 'thumbnail'
+  ) {
+    return value;
+  }
+  return undefined;
+}
+
+function renderRecordingMode(variant: RecordingVariant): void {
+  updateMeta('/');
+  if (!app) return;
+  game?.destroy(true);
+  game = undefined;
+  app.innerHTML = '';
+  document.body.classList.add('game-mode');
+  document.body.classList.remove('site-mode');
+
+  const gameRoot = document.createElement('div');
+  gameRoot.id = 'game-root';
+  app.appendChild(gameRoot);
+  game = new Phaser.Game({ ...gameConfig, parent: gameRoot, title: `recording:${variant}` });
 }
 
 function renderPrivacy(): string {
