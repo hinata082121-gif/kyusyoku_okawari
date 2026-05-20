@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import './styles/global.css';
 import { gameConfig } from './game/config';
 import { buildAbsoluteUrl, siteConfig } from './config/site';
-import { initAnalytics, trackPageView } from './lib/analytics';
 
 const app = document.querySelector<HTMLElement>('#app');
 let game: Phaser.Game | undefined;
@@ -74,7 +73,6 @@ function navigate(route: RouteKey): void {
 function render(): void {
   const route = getRoute();
   updateMeta(route);
-  trackPageView(route);
 
   if (!app) return;
   game?.destroy(true);
@@ -251,15 +249,12 @@ function renderHowToPlay(): string {
 }
 
 function renderPrivacy(): string {
-  const analyticsStatus = siteConfig.gaMeasurementId
-    ? '当サイトでは、利用状況の把握と改善のためGoogle Analytics 4を利用しています。Cookieなどを通じて閲覧ページ、利用環境、ゲーム内イベント情報などを取得することがあります。これらはサイト改善と利用状況分析のために利用します。'
-    : '現時点ではGoogle AnalyticsのMeasurement IDは設定されていません。導入時には、Cookieなどを通じて閲覧ページ、利用環境、ゲーム内イベント情報などを取得し、サイト改善と利用状況分析のために利用する場合があります。';
   return `
     <p>当サイトは、無料ブラウザゲーム「給食おかわり争奪戦」を提供するサイトです。</p>
     <h2>取得する可能性のある情報</h2>
     <p>アカウント登録やゲーム内での個人情報入力機能はありません。当サイトは、個人を特定する情報を意図的に収集しません。</p>
     <h2>アクセス解析について</h2>
-    <p>${analyticsStatus}</p>
+    <p>当サイトでは、利用状況の把握と改善のためGoogle Analytics 4を利用しています。Cookieなどを通じて閲覧ページ、利用環境、ゲーム内イベント情報などを取得することがあります。これらはサイト改善と利用状況分析のために利用します。</p>
     <h2>広告配信について</h2>
     <p>当サイトでは、Google AdSenseのサイト審査および将来的な広告配信のため、Googleが提供する広告関連スクリプトを設置する場合があります。広告配信事業者がCookieを使用し、利用者の興味に応じた広告を表示する場合があります。現時点でゲーム画面、操作ボタン付近、リザルト画面に広告枠は設置していません。</p>
     <h2>Cookieについて</h2>
@@ -402,6 +397,5 @@ function updateGoogleSiteVerification(): void {
   document.head.appendChild(meta);
 }
 
-initAnalytics();
 window.addEventListener('popstate', render);
 render();

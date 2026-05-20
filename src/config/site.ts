@@ -14,7 +14,6 @@ export const siteConfig = {
     '給食のおかわりをめぐる、平成学校あるある16bit風ミニゲーム。タイミングよく並んで、最後のプリンを勝ち取ろう。',
   keywords: '給食, おかわり, ブラウザゲーム, ミニゲーム, 平成, 学校あるある, 16bit, Phaser, スマホゲーム',
   siteUrl: normalizeSiteUrl(import.meta.env.VITE_SITE_URL),
-  gaMeasurementId: import.meta.env.VITE_GA_MEASUREMENT_ID?.trim() ?? '',
   googleSiteVerification: import.meta.env.VITE_GOOGLE_SITE_VERIFICATION?.trim() ?? '',
 } as const;
 

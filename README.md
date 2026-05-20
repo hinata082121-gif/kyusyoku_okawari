@@ -73,7 +73,7 @@ public/
 
 - ゲームプレイ画面、じゃんけん画面、リザルト画面に広告枠はありません。
 - OGP、canonical、sitemap、robotsのURLは `https://kyusyoku-okawari.vercel.app/` に合わせています。
-- Google AnalyticsはMeasurement ID未設定なら読み込まれません。
+- GA4タグ本体は `index.html` の `head` に設置済みです。
 - AdSenseのサイト審査用scriptは `index.html` の `head` に設置済みです。広告ユニットは追加していません。
 - `.env` / `.env.local` / `.env.production` はコミットしません。公開用の値はVercel環境変数で管理します。
 
@@ -81,12 +81,10 @@ public/
 
 ```bash
 VITE_SITE_URL=https://kyusyoku-okawari.vercel.app
-VITE_GA_MEASUREMENT_ID=
 VITE_GOOGLE_SITE_VERIFICATION=
 ```
 
 - `VITE_SITE_URL`: canonical、OGP、sitemap、robotsで使う公開URL
-- `VITE_GA_MEASUREMENT_ID`: GA4 Measurement ID。未設定ならGAタグもイベントも送信されません
 - `VITE_GOOGLE_SITE_VERIFICATION`: Search ConsoleのHTML meta認証コード。未設定ならmetaタグは出ません
 
 ## Search Console登録手順
@@ -100,24 +98,10 @@ VITE_GOOGLE_SITE_VERIFICATION=
 7. Search Consoleで確認
 8. `sitemap.xml` を送信
 
-## Google Analytics 4 導入手順
+## GA4計測イベント
 
-1. Google AnalyticsでGA4プロパティを作成
-2. ウェブデータストリームを作成
-3. Measurement IDを取得
-4. `.env.local` に以下を設定
+このプロジェクトでは、以下のゲーム内イベントをGA4に送信します。
 
-```bash
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
-```
-
-5. VercelのEnvironment Variablesにも同じ値を設定
-6. 再デプロイ
-7. Google Analyticsのリアルタイムレポートで確認
-
-## 計測イベント
-
-- `page_view`
 - `game_start`
 - `menu_revealed`
 - `timing_tap`
@@ -129,7 +113,6 @@ VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 
 送信パラメータ:
 
-- `page_path`
 - `menu_name`
 - `menu_id`
 - `result_type`
@@ -139,6 +122,11 @@ VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 - `janken_result`
 
 個人情報、ログイン情報、ユーザー識別情報は送信しません。
+
+## 注意
+
+GA4タグ本体は `index.html` に設置しています。
+`analytics.ts` ではscriptの追加は行わず、`window.gtag` が存在する場合のみイベントを送信します。
 
 ## AdSense申請前チェック
 

@@ -1,38 +1,6 @@
-import { siteConfig } from '../config/site';
-
 type AnalyticsValue = string | number | boolean;
 type AnalyticsParams = Record<string, AnalyticsValue | null | undefined>;
 type JankenResult = 'win' | 'lose' | 'draw';
-
-let initialized = false;
-const GA_SCRIPT_ID = 'ga4-gtag-script';
-
-export function initAnalytics(): void {
-  const measurementId = siteConfig.gaMeasurementId;
-  if (!measurementId || initialized) return;
-
-  window.dataLayer = window.dataLayer ?? [];
-  window.gtag = (...args: unknown[]) => {
-    window.dataLayer?.push(args);
-  };
-  window.gtag('js', new Date());
-  window.gtag('config', measurementId, { send_page_view: false });
-
-  if (!document.getElementById(GA_SCRIPT_ID)) {
-    const script = document.createElement('script');
-    script.id = GA_SCRIPT_ID;
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-    document.head.appendChild(script);
-  }
-  initialized = true;
-}
-
-export function trackPageView(path: string): void {
-  sendEvent('page_view', {
-    page_path: path,
-  });
-}
 
 export function trackGameStart(): void {
   sendEvent('game_start');
@@ -101,7 +69,7 @@ export function trackShareCopyClick(resultType: string, menuName: string): void 
 }
 
 function sendEvent(name: string, params: AnalyticsParams = {}): void {
-  if (!siteConfig.gaMeasurementId || !window.gtag) return;
+  if (typeof window.gtag !== 'function') return;
   window.gtag('event', name, sanitizeParams(params));
 }
 
