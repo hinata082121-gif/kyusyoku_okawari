@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_FAMILY, GAME_WIDTH, SceneKeys } from '../constants';
-import { getRandomMenu } from '../data/menus';
+import { getRandomMenu, rarityLabels } from '../data/menus';
 import type { GameState, LunchMenu } from '../types';
 import { PixelPanel } from '../ui/PixelPanel';
 import { drawMenuIcon } from '../ui/ResultCard';
-import { trackMenuRevealed } from '../../lib/analytics';
+import { markDiscovered } from '../systems/collectionSystem';
+import { trackMenuRevealed, trackRareMenuRevealed } from '../../lib/analytics';
 
 export class MenuRevealScene extends Phaser.Scene {
   constructor() {
@@ -17,7 +18,11 @@ export class MenuRevealScene extends Phaser.Scene {
       selectedMenuId: menu.id,
       remainingServings: menu.remainingServings,
     };
+    markDiscovered(menu.id);
     trackMenuRevealed(menu.name, menu.id);
+    if (menu.rarity === 'rare' || menu.rarity === 'superRare' || menu.rarity === 'legendary') {
+      trackRareMenuRevealed(menu.name, menu.id, menu.rarity);
+    }
 
     this.cameras.main.setBackgroundColor(0xf0c27a);
     drawMenuBoard(this, menu);
@@ -69,14 +74,24 @@ function drawMenuBoard(scene: Phaser.Scene, menu: LunchMenu): void {
   }).setOrigin(0.5);
   scene.add.text(GAME_WIDTH / 2, 330, menu.name, {
     fontFamily: FONT_FAMILY,
-    fontSize: '34px',
+    fontSize: menu.name.length > 12 ? '22px' : '34px',
     color: '#e84b4b',
     stroke: '#101820',
     strokeThickness: 5,
     fontStyle: 'bold',
+    align: 'center',
+    wordWrap: { width: 248 },
+  }).setOrigin(0.5);
+  scene.add.text(GAME_WIDTH / 2, 364, `[${rarityLabels[menu.rarity]}]`, {
+    fontFamily: FONT_FAMILY,
+    fontSize: '15px',
+    color: '#fff8e8',
+    backgroundColor: '#25313f',
+    padding: { x: 8, y: 3 },
+    fontStyle: 'bold',
   }).setOrigin(0.5);
 
-  drawMenuIcon(scene, GAME_WIDTH / 2, 392, menu.id, 1.45);
+  drawMenuIcon(scene, GAME_WIDTH / 2, 396, menu.id, 1.35);
   scene.add.text(63, 420, '人気度', {
     fontFamily: FONT_FAMILY,
     fontSize: '14px',

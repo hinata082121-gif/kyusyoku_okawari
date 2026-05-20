@@ -48,7 +48,7 @@ export class JankenScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    new SpeechBubble(this, GAME_WIDTH / 2, 136, 282, '残り1個だから、じゃんけんね');
+    new SpeechBubble(this, GAME_WIDTH / 2, 136, 282, getTeacherLine(menu));
     drawMenuIcon(this, GAME_WIDTH / 2, 222, menu.id, 1.35);
     drawCharacter(this, 92, 346, 'idle', COLORS.blue);
     drawCharacter(this, 268, 346, 'idle', COLORS.green);
@@ -113,6 +113,12 @@ export class JankenScene extends Phaser.Scene {
       } satisfies GameState);
     });
   }
+}
+
+function getTeacherLine(menu: ReturnType<typeof getMenuFromState>): string {
+  if (menu.rarity === 'legendary') return '伝説メニューは、じゃんけんで決めます';
+  if (menu.forceJanken) return 'レアメニューだから、みんなで勝負です';
+  return '残り1個だから、じゃんけんね';
 }
 
 function labelStyle(backgroundColor: string): Phaser.Types.GameObjects.Text.TextStyle {

@@ -68,6 +68,29 @@ export function trackShareCopyClick(resultType: string, menuName: string): void 
   });
 }
 
+export function trackCollectionView(acquiredCount: number): void {
+  sendEvent('collection_view', {
+    acquired_count: acquiredCount,
+  });
+}
+
+export function trackCollectionAcquired(menuName: string, menuId: string, rarity: string, acquiredCount: number): void {
+  sendEvent('collection_acquired', {
+    menu_name: menuName,
+    menu_id: menuId,
+    rarity,
+    acquired_count: acquiredCount,
+  });
+}
+
+export function trackRareMenuRevealed(menuName: string, menuId: string, rarity: string): void {
+  sendEvent('rare_menu_revealed', {
+    menu_name: menuName,
+    menu_id: menuId,
+    rarity,
+  });
+}
+
 function sendEvent(name: string, params: AnalyticsParams = {}): void {
   if (typeof window.gtag !== 'function') return;
   window.gtag('event', name, sanitizeParams(params));

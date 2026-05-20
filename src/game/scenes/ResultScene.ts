@@ -5,7 +5,9 @@ import { COLORS, FONT_FAMILY, GAME_WIDTH, SceneKeys, UI } from '../constants';
 import type { GameState, ResultType } from '../types';
 import { buildShareCopy, pickMainCopy } from '../systems/shareTextSystem';
 import { getMenuFromState, normalizeResultState } from '../systems/gameStateSystem';
-import { trackResultView, trackRetryClick, trackShareCopyClick } from '../../lib/analytics';
+import { markAcquired } from '../systems/collectionSystem';
+import { rarityLabels } from '../data/menus';
+import { trackCollectionAcquired, trackResultView, trackRetryClick, trackShareCopyClick } from '../../lib/analytics';
 
 export class ResultScene extends Phaser.Scene {
   private state?: GameState;
@@ -26,6 +28,10 @@ export class ResultScene extends Phaser.Scene {
 
     const menu = getMenuFromState(this.state);
     const resultType: ResultType = this.state.resultType ?? 'soldOut';
+    const acquireResult = isAcquireResult(resultType) ? markAcquired(menu.id) : undefined;
+    if (acquireResult) {
+      trackCollectionAcquired(menu.name, menu.id, menu.rarity, acquireResult.entry.acquiredCount);
+    }
     const mainCopy = pickMainCopy(resultType, menu);
     const shareCopy = buildShareCopy(resultType, menu, mainCopy);
     const stateWithShare: GameState = { ...this.state, resultType, shareCopy };
@@ -35,6 +41,9 @@ export class ResultScene extends Phaser.Scene {
     drawPixelConfetti(this, resultType);
     if (resultType === 'success' || resultType === 'lastOneSuccess') {
       this.cameras.main.shake(110, 0.003);
+      if (menu.rarity === 'superRare' || menu.rarity === 'legendary') {
+        this.cameras.main.flash(260, 255, 243, 214);
+      }
     } else {
       this.cameras.main.shake(130, 0.004);
       this.add.rectangle(GAME_WIDTH / 2, 320, GAME_WIDTH, 640, 0x000000, 0.12);
@@ -50,7 +59,9 @@ export class ResultScene extends Phaser.Scene {
       align: 'center',
     }).setOrigin(0.5);
 
-    new ResultCard(this, stateWithShare, menu, mainCopy);
+    new ResultCard(this, stateWithShare, menu, mainCopy, {
+      collectionNotice: getCollectionNotice(menu.rarity, acquireResult?.isFirstAcquire, acquireResult?.entry.acquiredCount),
+    });
 
     const feedbackText = this.add.text(GAME_WIDTH / 2, 514, '', {
       fontFamily: FONT_FAMILY,
@@ -93,6 +104,21 @@ export class ResultScene extends Phaser.Scene {
 
     void navigator.clipboard.writeText(shareCopy).then(done, fallback);
   }
+}
+
+function isAcquireResult(resultType: ResultType): boolean {
+  return resultType === 'success' || resultType === 'lastOneSuccess';
+}
+
+function getCollectionNotice(rarity: ReturnType<typeof getMenuFromState>['rarity'], isFirst?: boolean, acquiredCount?: number): string | undefined {
+  if (isFirst === undefined || acquiredCount === undefined) return undefined;
+  const rarityLabel = rarityLabels[rarity];
+  if (isFirst) {
+    if (rarity === 'legendary') return '伝説メニュー獲得！ NEW COLLECTION!';
+    if (rarity === 'superRare') return '激レア獲得！ 給食コレクションに登録！';
+    return `NEW COLLECTION! [${rarityLabel}] 登録！`;
+  }
+  return `獲得回数 +1（${acquiredCount}回目） またひとつ思い出が増えた`;
 }
 
 function copyTextFallback(text: string): boolean {

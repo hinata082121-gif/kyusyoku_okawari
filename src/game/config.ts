@@ -7,6 +7,7 @@ import { TimingScene } from './scenes/TimingScene';
 import { QueueScene } from './scenes/QueueScene';
 import { JankenScene } from './scenes/JankenScene';
 import { ResultScene } from './scenes/ResultScene';
+import { CollectionScene } from './scenes/CollectionScene';
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -30,6 +31,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     QueueScene,
     JankenScene,
     ResultScene,
+    CollectionScene,
   ],
   title: SceneKeys.Title,
 };

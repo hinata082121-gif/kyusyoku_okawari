@@ -1,12 +1,16 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_FAMILY, GAME_WIDTH } from '../constants';
-import { lunchMenus } from '../data/menus';
+import { lunchMenus, rarityLabels } from '../data/menus';
 import type { GameState, LunchMenu, ResultType } from '../types';
 import { resultMessages } from '../data/resultMessages';
 import { PixelPanel } from './PixelPanel';
 
+export interface ResultCardOptions {
+  collectionNotice?: string;
+}
+
 export class ResultCard extends Phaser.GameObjects.Container {
-  constructor(scene: Phaser.Scene, state: GameState, menu: LunchMenu, selectedMainCopy: string) {
+  constructor(scene: Phaser.Scene, state: GameState, menu: LunchMenu, selectedMainCopy: string, options: ResultCardOptions = {}) {
     super(scene, GAME_WIDTH / 2, 276);
     const resultType = state.resultType ?? 'soldOut';
     const message = resultMessages[resultType];
@@ -30,9 +34,11 @@ export class ResultCard extends Phaser.GameObjects.Container {
     const menuLabel = scene.add
       .text(0, -150, menu.name, {
         fontFamily: FONT_FAMILY,
-        fontSize: '22px',
+        fontSize: menu.name.length > 12 ? '16px' : '22px',
         color: '#172a4a',
         fontStyle: 'bold',
+        wordWrap: { width: 286 },
+        align: 'center',
       })
       .setOrigin(0.5);
     const badge = scene.add
@@ -47,8 +53,30 @@ export class ResultCard extends Phaser.GameObjects.Container {
       .setOrigin(0.5);
     badge.setY(-118);
 
-    this.add([title, menuLabel, badge]);
+    const rarityLabel = scene.add.text(0, -94, `[${rarityLabels[menu.rarity]}]`, {
+      fontFamily: FONT_FAMILY,
+      fontSize: '13px',
+      color: '#ffffff',
+      backgroundColor: getRarityColor(menu.rarity),
+      padding: { x: 9, y: 3 },
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+
+    this.add([title, menuLabel, badge, rarityLabel]);
     this.drawResultIllustration(scene, resultType, menu);
+
+    const collectionNotice = options.collectionNotice
+      ? scene.add.text(0, 100, options.collectionNotice, {
+        fontFamily: FONT_FAMILY,
+        fontSize: options.collectionNotice.length > 28 ? '11px' : '13px',
+        color: '#fff8e8',
+        backgroundColor: menu.rarity === 'legendary' ? '#8b5adf' : '#e84b4b',
+        padding: { x: 8, y: 4 },
+        fontStyle: 'bold',
+        align: 'center',
+        wordWrap: { width: 282 },
+      }).setOrigin(0.5)
+      : undefined;
 
     const quoteMarkTop = scene.add.text(-142, 120, '「', {
       fontFamily: FONT_FAMILY,
@@ -94,7 +122,7 @@ export class ResultCard extends Phaser.GameObjects.Container {
       })
       .setOrigin(0.5);
 
-    this.add([quoteMarkTop, mainCopyText, quoteMarkBottom, shareLabel, shareCopy]);
+    this.add(collectionNotice ? [collectionNotice, quoteMarkTop, mainCopyText, quoteMarkBottom, shareLabel, shareCopy] : [quoteMarkTop, mainCopyText, quoteMarkBottom, shareLabel, shareCopy]);
     scene.add.existing(this);
   }
 
@@ -205,11 +233,46 @@ export function drawMenuIcon(
     const roux = scene.add.rectangle(10 * scale, 8 * scale, 24 * scale, 15 * scale, menu.color);
     roux.setStrokeStyle(2, COLORS.black);
     container.add([plate, rice, roux]);
-  } else if (menuId === 'agepan') {
+  } else if (menuId === 'agepan' || menuId === 'cocoaAgepan') {
     const bread = scene.add.rectangle(0, 6, 58 * scale, 20 * scale, menu.color);
     bread.setStrokeStyle(3, COLORS.black);
-    const sugar = scene.add.rectangle(0, -1, 48 * scale, 5 * scale, COLORS.cream);
+    const sugar = scene.add.rectangle(0, -1, 48 * scale, 5 * scale, menuId === 'cocoaAgepan' ? COLORS.woodDark : COLORS.cream);
     container.add([bread, sugar]);
+  } else if (menuId === 'wakameRice' || menuId === 'softMen' || menuId === 'specialCurry') {
+    const bowl = scene.add.ellipse(0, 12, 56 * scale, 25 * scale, COLORS.tray);
+    bowl.setStrokeStyle(3, COLORS.black);
+    const food = scene.add.rectangle(0, 4, 38 * scale, 16 * scale, menu.color);
+    food.setStrokeStyle(2, COLORS.black);
+    container.add([bowl, food]);
+  } else if (menuId === 'karaage') {
+    const plate = scene.add.ellipse(0, 12, 58 * scale, 24 * scale, COLORS.tray);
+    const nugget1 = scene.add.circle(-10 * scale, 4 * scale, 11 * scale, menu.color);
+    const nugget2 = scene.add.circle(8 * scale, 3 * scale, 12 * scale, menu.accentColor);
+    nugget1.setStrokeStyle(2, COLORS.black);
+    nugget2.setStrokeStyle(2, COLORS.black);
+    container.add([plate, nugget1, nugget2]);
+  } else if (menuId === 'coffeeMilk' || menuId === 'milmake') {
+    const pack = scene.add.rectangle(0, 5, 34 * scale, 42 * scale, menu.color);
+    pack.setStrokeStyle(3, COLORS.black);
+    const label = scene.add.rectangle(0, 4, 24 * scale, 10 * scale, menu.accentColor);
+    container.add([pack, label]);
+  } else if (menuId === 'frozenMikan') {
+    const fruit = scene.add.circle(0, 4, 19 * scale, menu.color);
+    fruit.setStrokeStyle(3, COLORS.black);
+    const frost = scene.add.rectangle(0, -5, 26 * scale, 5 * scale, COLORS.blue, 0.7);
+    container.add([fruit, frost]);
+  } else if (menuId === 'jelly' || menuId === 'tanabataJelly' || menuId === 'fruitPunch') {
+    const cup = scene.add.rectangle(0, 8, 38 * scale, 28 * scale, menu.color);
+    cup.setStrokeStyle(3, COLORS.black);
+    const shine = scene.add.rectangle(-8 * scale, 2 * scale, 8 * scale, 18 * scale, COLORS.white, 0.55);
+    const star = menuId === 'tanabataJelly' ? scene.add.star(12 * scale, -8 * scale, 5, 4 * scale, 9 * scale, menu.accentColor) : undefined;
+    container.add(star ? [cup, shine, star] : [cup, shine]);
+  } else if (menuId === 'christmasCake' || menuId === 'graduationCrepe') {
+    const cake = scene.add.rectangle(0, 8, 46 * scale, 28 * scale, menu.color);
+    cake.setStrokeStyle(3, COLORS.black);
+    const cream = scene.add.rectangle(0, -4, 50 * scale, 8 * scale, COLORS.cream);
+    const deco = scene.add.circle(12 * scale, -8 * scale, 5 * scale, menu.accentColor);
+    container.add([cake, cream, deco]);
   } else {
     const cup = scene.add.rectangle(0, 8, 34 * scale, 30 * scale, menu.color);
     cup.setStrokeStyle(3, COLORS.black);
@@ -282,4 +345,12 @@ function getResultTheme(resultType: ResultType): {
     return { panelColor: 0xe9defb, badgeBg: '#8b5adf', badgeText: '#ffffff', titleText: '#fff3d6' };
   }
   return { panelColor: 0xe5edf6, badgeBg: '#25313f', badgeText: '#ffffff', titleText: '#ffffff' };
+}
+
+function getRarityColor(rarity: LunchMenu['rarity']): string {
+  if (rarity === 'legendary') return '#8b5adf';
+  if (rarity === 'superRare') return '#e84b4b';
+  if (rarity === 'rare') return '#4f8dd8';
+  if (rarity === 'uncommon') return '#1f7a4d';
+  return '#25313f';
 }

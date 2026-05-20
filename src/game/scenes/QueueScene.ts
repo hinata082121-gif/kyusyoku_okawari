@@ -6,6 +6,7 @@ import { decideQueueOutcome } from '../systems/resultSystem';
 import { SpeechBubble } from '../ui/SpeechBubble';
 import { drawCharacter, drawMenuIcon } from '../ui/ResultCard';
 import { getMenuFromState, normalizePlayableState } from '../systems/gameStateSystem';
+import { rarityLabels } from '../data/menus';
 
 export class QueueScene extends Phaser.Scene {
   private state?: GameState;
@@ -41,9 +42,9 @@ export class QueueScene extends Phaser.Scene {
       strokeThickness: 5,
       fontStyle: 'bold',
     }).setOrigin(0.5);
-    this.add.text(GAME_WIDTH / 2, 88, `残りおかわり：${this.state.remainingServings}個`, {
+    this.add.text(GAME_WIDTH / 2, 88, `残りおかわり：${this.state.remainingServings}個 / ${rarityLabels[menu.rarity]}`, {
       fontFamily: FONT_FAMILY,
-      fontSize: '19px',
+      fontSize: '17px',
       color: '#fffd9a',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -54,14 +55,14 @@ export class QueueScene extends Phaser.Scene {
 
     const decision = decideQueueOutcome(this.state, menu);
     const bubbleText = decision.next === 'janken'
-      ? '残り1個だから、じゃんけんね'
+      ? getJankenLine(menu)
       : decision.resultType === 'success'
         ? '間に合ったね'
         : 'もうありません';
     new SpeechBubble(this, GAME_WIDTH / 2, 440, 270, bubbleText);
 
     const queueCopy = decision.next === 'janken'
-      ? '残り1個！勝負はじゃんけんへ！'
+      ? getJankenCopy(menu)
       : decision.resultType === 'soldOut'
         ? '目の前でなくなった…'
         : getRankReactionText(this.state.rank);
@@ -109,4 +110,16 @@ export class QueueScene extends Phaser.Scene {
       }).setOrigin(0.5);
     });
   }
+}
+
+function getJankenLine(menu: ReturnType<typeof getMenuFromState>): string {
+  if (menu.rarity === 'legendary') return '伝説メニューは、じゃんけんで決めます';
+  if (menu.forceJanken) return 'レアメニューだから、みんなで勝負です';
+  return '残り1個だから、じゃんけんね';
+}
+
+function getJankenCopy(menu: ReturnType<typeof getMenuFromState>): string {
+  if (menu.rarity === 'legendary') return '伝説メニュー！勝負はじゃんけんへ！';
+  if (menu.rarity === 'superRare') return '激レア給食！残り1個扱いでじゃんけんへ！';
+  return '残り1個！勝負はじゃんけんへ！';
 }

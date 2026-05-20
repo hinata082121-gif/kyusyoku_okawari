@@ -59,14 +59,18 @@ export class TitleScene extends Phaser.Scene {
     drawMenuIcon(this, 180, 412, 'agepan', 1);
     drawMenuIcon(this, 244, 412, 'pudding', 1);
 
-    new Button(this, GAME_WIDTH / 2, 500, 176, 48, '遊び方', () => {
-      this.showHowToPlay();
-    }, { fillColor: COLORS.navy, fontSize: 17 });
-
-    new Button(this, GAME_WIDTH / 2, 570, 286, 62, 'スタート', () => {
+    new Button(this, GAME_WIDTH / 2, 498, 286, 56, 'スタート', () => {
       trackGameStart();
       this.scene.start(SceneKeys.MenuReveal);
-    }, { fillColor: COLORS.red, fontSize: 26 });
+    }, { fillColor: COLORS.red, fontSize: 24 });
+
+    new Button(this, GAME_WIDTH / 2, 562, 260, 48, '給食コレクション', () => {
+      this.scene.start(SceneKeys.Collection);
+    }, { fillColor: COLORS.green, fontSize: 18 });
+
+    new Button(this, GAME_WIDTH / 2, 614, 176, 48, '遊び方', () => {
+      this.showHowToPlay();
+    }, { fillColor: COLORS.navy, fontSize: 16 });
   }
 
   private showHowToPlay(): void {

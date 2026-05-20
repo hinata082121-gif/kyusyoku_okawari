@@ -2,7 +2,7 @@ import { lunchMenus } from '../data/menus';
 import type { GameState, LunchMenu, LunchMenuId, ResultType } from '../types';
 
 export function isLunchMenuId(value: unknown): value is LunchMenuId {
-  return value === 'curry' || value === 'agepan' || value === 'pudding';
+  return typeof value === 'string' && value in lunchMenus;
 }
 
 export function isResultType(value: unknown): value is ResultType {

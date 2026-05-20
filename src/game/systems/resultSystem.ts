@@ -13,6 +13,14 @@ export function decideQueueOutcome(state: GameState, menu: LunchMenu): QueueDeci
   const rank = state.rank ?? 5;
   const remaining = state.remainingServings;
 
+  if (menu.forceJanken || menu.rarity === 'legendary') {
+    return { next: 'janken' };
+  }
+
+  if (menu.rarity === 'superRare' && Math.random() < menu.jankenRate) {
+    return { next: 'janken' };
+  }
+
   if (shouldStartJanken(menu, rank, remaining)) {
     return { next: 'janken' };
   }

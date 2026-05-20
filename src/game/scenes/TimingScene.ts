@@ -7,6 +7,7 @@ import { getReactionTimeMs, getSignalWaitMs } from '../systems/timingSystem';
 import { getRankFromReaction } from '../systems/rankSystem';
 import { drawCharacter, drawMenuIcon } from '../ui/ResultCard';
 import { getMenuFromState, normalizePlayableState } from '../systems/gameStateSystem';
+import { rarityLabels } from '../data/menus';
 import { trackTimingTap } from '../../lib/analytics';
 
 export class TimingScene extends Phaser.Scene {
@@ -122,11 +123,11 @@ export class TimingScene extends Phaser.Scene {
     this.add.rectangle(GAME_WIDTH / 2, 54, 330, 82, COLORS.navy).setStrokeStyle(4, COLORS.black);
     this.add.text(28, 28, `人気メニュー：${menu.name}`, {
       fontFamily: FONT_FAMILY,
-      fontSize: '17px',
+      fontSize: menu.name.length > 12 ? '12px' : '17px',
       color: '#fff8e8',
       fontStyle: 'bold',
     });
-    this.add.text(28, 58, `残りおかわり：${menu.remainingServings}個`, {
+    this.add.text(28, 58, `残り：${menu.remainingServings}個 / ${rarityLabels[menu.rarity]}`, {
       fontFamily: FONT_FAMILY,
       fontSize: '16px',
       color: '#fffd9a',

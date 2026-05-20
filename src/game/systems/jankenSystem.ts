@@ -29,11 +29,12 @@ export function judgeJanken(player: JankenHand, cpu: JankenHand): 'win' | 'lose'
 }
 
 export function shouldStartJanken(menu: LunchMenu, rank: number, remainingServings: number): boolean {
+  if (menu.forceJanken || menu.rarity === 'legendary') return true;
   if (rank === remainingServings + 1) return true;
   if (remainingServings <= 2 && rank === remainingServings) {
     return Math.random() < menu.jankenRate;
   }
-  if (menu.id === 'pudding' && rank <= remainingServings + 1) {
+  if ((menu.rarity === 'rare' || menu.id === 'pudding') && rank <= remainingServings + 1) {
     return Math.random() < menu.jankenRate;
   }
   return false;

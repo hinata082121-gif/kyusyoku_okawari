@@ -46,4 +46,5 @@ export const SceneKeys = {
   Queue: 'QueueScene',
   Janken: 'JankenScene',
   Result: 'ResultScene',
+  Collection: 'CollectionScene',
 } as const;

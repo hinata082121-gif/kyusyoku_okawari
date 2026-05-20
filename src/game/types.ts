@@ -1,4 +1,23 @@
-export type LunchMenuId = 'curry' | 'agepan' | 'pudding';
+export type LunchMenuId =
+  | 'curry'
+  | 'wakameRice'
+  | 'jelly'
+  | 'frozenMikan'
+  | 'agepan'
+  | 'karaage'
+  | 'softMen'
+  | 'coffeeMilk'
+  | 'pudding'
+  | 'cocoaAgepan'
+  | 'milmake'
+  | 'fruitPunch'
+  | 'tanabataJelly'
+  | 'christmasCake'
+  | 'graduationCrepe'
+  | 'jumboPudding'
+  | 'specialCurry';
+
+export type LunchRarity = 'common' | 'uncommon' | 'rare' | 'superRare' | 'legendary';
 
 export type ResultType =
   | 'success'
@@ -14,10 +33,15 @@ export type ClassmateType = 'quick' | 'relaxed' | 'puddingLover';
 export interface LunchMenu {
   id: LunchMenuId;
   name: string;
+  rarity: LunchRarity;
   popularity: number;
+  baseRemaining: number;
   remainingServings: number;
-  timingDifficulty: 'normal' | 'hard';
+  timingDifficulty: 'easy' | 'normal' | 'hard';
+  appearanceWeight: number;
   jankenRate: number;
+  forceJanken?: boolean;
+  collectionText: string;
   introText: string;
   successCopy: string;
   failCopy: string;
@@ -42,6 +66,15 @@ export interface GameState {
   jankenPlayerHand?: JankenHand;
   jankenCpuHand?: JankenHand;
   shareCopy?: string;
+}
+
+export interface CollectionEntry {
+  menuId: LunchMenuId;
+  discovered: boolean;
+  acquired: boolean;
+  acquiredCount: number;
+  firstAcquiredAt?: string;
+  lastAcquiredAt?: string;
 }
 
 export interface ResultMessage {
